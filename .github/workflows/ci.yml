@@ -35,16 +35,27 @@ jobs:
           OUTPUT=$(mlflow run . --env-manager=local)
           echo "$OUTPUT"
 
-      - name: Get latest run_id from MLflow
+      - name: Get latest run_id using MLflow Python API
         run: |
-          RUN_ID=$(mlflow runs list \
-            --experiment-id 0 \
-            --order-by start_time DESC \
-            --max-results 1 \
-            --output json | python -c "import sys, json; print(json.load(sys.stdin)[0]['run_id'])")
+          python - << 'EOF'
+          import mlflow
+          from mlflow.tracking import MlflowClient
 
-          echo "RUN_ID=$RUN_ID" >> $GITHUB_ENV
-          echo "Captured RUN_ID: $RUN_ID"
+          client = MlflowClient()
+          experiment = client.get_experiment_by_name("Default")
+
+          runs = client.search_runs(
+              experiment_ids=[experiment.experiment_id],
+              order_by=["attributes.start_time DESC"],
+              max_results=1,
+          )
+
+          run_id = runs[0].info.run_id
+          print(f"RUN_ID={run_id}")
+
+          with open("$GITHUB_ENV", "a") as f:
+              f.write(f"RUN_ID={run_id}\n")
+          EOF
 
       - name: Verify MLflow run exists
         run: |

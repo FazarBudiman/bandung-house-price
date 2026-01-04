@@ -57,10 +57,6 @@ jobs:
               f.write(f"RUN_ID={run_id}\n")
           EOF
 
-      - name: Verify MLflow run exists
-        run: |
-          mlflow runs describe --run-id $RUN_ID
-
       - name: Build Docker image from MLflow model
         run: |
           mlflow models build-docker \

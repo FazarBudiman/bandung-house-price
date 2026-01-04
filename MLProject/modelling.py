@@ -19,7 +19,7 @@ if __name__ == "__main__":
 
     input_example = X_train[0:5]
 
-    mlflow.autolog(log_models=False)
+    mlflow.autolog(log_models=False, log_datasets=False)
 
     with mlflow.start_run():    
         model = XGBRegressor(

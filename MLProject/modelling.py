@@ -19,8 +19,6 @@ if __name__ == "__main__":
 
     input_example = X_train[0:5]
 
-    mlflow.autolog()
-
     with mlflow.start_run():    
         model = XGBRegressor(
         n_estimators=466,
@@ -36,6 +34,12 @@ if __name__ == "__main__":
         model.fit(X_train, y_train, eval_set=[(X_test, y_test)], verbose=False)
 
         y_pred = model.predict(X_test)
+
+        mlflow.sklearn.log_model(
+            sk_model=model,
+            artifact_path="model",
+            input_example=input_example
+        )
 
         rmse = root_mean_squared_error(y_test, y_pred)
         mae = mean_absolute_error(y_test, y_pred)

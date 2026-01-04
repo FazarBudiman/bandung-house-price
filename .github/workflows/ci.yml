@@ -7,9 +7,15 @@ on:
 permissions:
   contents: read
 
+# env:
+#   # Tracking MLflow konsisten di semua step
+#   MLFLOW_TRACKING_URI: file:${{ github.workspace }}/MLProject/mlruns
+
 env:
-  # Tracking MLflow konsisten di semua step
-  MLFLOW_TRACKING_URI: file:${{ github.workspace }}/MLProject/mlruns
+  MLFLOW_TRACKING_URI: https://dagshub.com/${{ secrets.DAGSHUB_USERNAME }}/${{ secrets.DAGSHUB_REPO }}.mlflow
+  MLFLOW_TRACKING_USERNAME: ${{ secrets.DAGSHUB_USERNAME }}
+  MLFLOW_TRACKING_PASSWORD: ${{ secrets.DAGSHUB_TOKEN }}
+
 
 jobs:
   train-build-push:

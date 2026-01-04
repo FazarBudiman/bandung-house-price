@@ -1,0 +1,31 @@
+artifact_path: file:///home/runner/work/bandung-house-price/bandung-house-price/MLProject/mlruns/0/models/m-4dc9ff5557ae4794befdaaecb5fd0e09/artifacts
+flavors:
+  python_function:
+    data: model.xgb
+    env:
+      conda: conda.yaml
+      virtualenv: python_env.yaml
+    loader_module: mlflow.xgboost
+    python_version: 3.10.19
+  xgboost:
+    code: null
+    data: model.xgb
+    model_class: xgboost.sklearn.XGBRegressor
+    model_format: xgb
+    xgb_version: 2.1.4
+is_signature_from_type_hint: false
+mlflow_version: 3.1.4
+model_id: m-4dc9ff5557ae4794befdaaecb5fd0e09
+model_size_bytes: 1750230
+model_uuid: m-4dc9ff5557ae4794befdaaecb5fd0e09
+prompts: null
+run_id: 7292c09c51924d6c8b86d643830d91b9
+signature:
+  inputs: '[{"type": "double", "name": "location", "required": true}, {"type": "double",
+    "name": "bedroom_count", "required": true}, {"type": "double", "name": "bathroom_count",
+    "required": true}, {"type": "double", "name": "carport_count", "required": true},
+    {"type": "double", "name": "land_area", "required": true}]'
+  outputs: '[{"type": "tensor", "tensor-spec": {"dtype": "float32", "shape": [-1]}}]'
+  params: null
+type_hint_from_example: false
+utc_time_created: '2026-01-04 11:54:34.583046'

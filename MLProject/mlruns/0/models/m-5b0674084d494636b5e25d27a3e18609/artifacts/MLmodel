@@ -1,0 +1,36 @@
+artifact_path: file:///home/runner/work/bandung-house-price/bandung-house-price/MLProject/mlruns/0/models/m-5b0674084d494636b5e25d27a3e18609/artifacts
+flavors:
+  python_function:
+    env:
+      conda: conda.yaml
+      virtualenv: python_env.yaml
+    loader_module: mlflow.sklearn
+    model_path: model.pkl
+    predict_fn: predict
+    python_version: 3.10.19
+  sklearn:
+    code: null
+    pickled_model: model.pkl
+    serialization_format: cloudpickle
+    sklearn_version: 1.6.1
+is_signature_from_type_hint: false
+mlflow_version: 3.1.4
+model_id: m-5b0674084d494636b5e25d27a3e18609
+model_size_bytes: 1759478
+model_uuid: m-5b0674084d494636b5e25d27a3e18609
+prompts: null
+run_id: 780ec5ecdbd14205ba48b5c186ee6fa0
+saved_input_example_info:
+  artifact_path: input_example.json
+  pandas_orient: split
+  serving_input_path: serving_input_example.json
+  type: dataframe
+signature:
+  inputs: '[{"type": "double", "name": "location", "required": true}, {"type": "double",
+    "name": "bedroom_count", "required": true}, {"type": "double", "name": "bathroom_count",
+    "required": true}, {"type": "double", "name": "carport_count", "required": true},
+    {"type": "double", "name": "land_area", "required": true}]'
+  outputs: '[{"type": "float", "required": true}]'
+  params: null
+type_hint_from_example: false
+utc_time_created: '2026-01-04 11:45:04.372163'

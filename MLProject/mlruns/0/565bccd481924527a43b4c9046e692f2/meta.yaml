@@ -1,0 +1,14 @@
+artifact_uri: file:///home/runner/work/bandung-house-price/bandung-house-price/MLProject/mlruns/0/565bccd481924527a43b4c9046e692f2/artifacts
+end_time: 1767529006436
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 565bccd481924527a43b4c9046e692f2
+run_name: treasured-turtle-785
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1767529002199
+status: 3
+tags: []
+user_id: runner

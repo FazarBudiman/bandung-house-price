@@ -42,14 +42,14 @@ jobs:
       
       - name: Get latest run_id
         run: |
-          RUN_ID=$(ls -td MLProject/mlruns/*/*/ | head -n 1 | awk -F'/' '{print $(NF-1)}')
-          echo "RUN_ID=$RUN_ID" >> $GITHUB_ENV
-          echo "Latest run_id: $RUN_ID"
+          MODEL_PATH=$(ls -td mlruns/0/models/* | head -n 1)
+          echo "MODEL_PATH=$MODEL_PATH" >> $GITHUB_ENV
+          echo "Latest run_id: $MODEL_PATH"
 
       - name: Build Docker image from MLflow model
         run: |
           mlflow models build-docker \
-            --model-uri "runs:/$RUN_ID/model" \
+            --model-uri "runs:/$MODEL_PATH/artifacts" \
             --name bandung-house-price
 
       - name: Login to Docker Hub

@@ -2,11 +2,14 @@ name: MLflow CI
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
 
 permissions:
-  contents: write
+  contents: read
 
+env:
+  # Tracking MLflow konsisten di semua step
+  MLFLOW_TRACKING_URI: file:${{ github.workspace }}/MLProject/mlruns
 
 jobs:
   train-build-push:
@@ -26,26 +29,19 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r MLProject/requirements.txt
 
-      - name: Run MLflow Project
+      - name: Run MLflow training & capture run_id
         run: |
           cd MLProject
-          mlflow run . --env-manager=local
+          OUTPUT=$(mlflow run . --env-manager=local)
+          echo "$OUTPUT"
 
-      - name: Save mlruns to repo
-        run: |
-          cd MLProject
-          git config --global user.name "github-actions"
-          git config --global user.email "github-actions@github.com"
-          git add mlruns/
-          git commit -m "Save mlruns from CI run" || echo "No changes"
-          git push
-      
-      - name: Get latest run_id
-        run: |
-          cd MLProject
-          RUN_ID=$(ls -td mlruns/0/*/ | grep -v datasets | head -n 1 | awk -F'/' '{print $(NF-1)}')
+          RUN_ID=$(echo "$OUTPUT" | grep "Run ID" | awk '{print $NF}')
           echo "RUN_ID=$RUN_ID" >> $GITHUB_ENV
-          echo "Latest run_id: $RUN_ID"
+          echo "Captured RUN_ID: $RUN_ID"
+
+      - name: Verify MLflow run exists
+        run: |
+          mlflow runs describe --run-id $RUN_ID
 
       - name: Build Docker image from MLflow model
         run: |
@@ -62,8 +58,11 @@ jobs:
       - name: Tag Docker image
         run: |
           docker tag bandung-house-price \
-          ${{ secrets.DOCKER_HUB_USERNAME }}/bandung-house-price:latest
+            ${{ secrets.DOCKER_HUB_USERNAME }}/bandung-house-price:${RUN_ID}
+          docker tag bandung-house-price \
+            ${{ secrets.DOCKER_HUB_USERNAME }}/bandung-house-price:latest
 
       - name: Push Docker image
         run: |
+          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/bandung-house-price:${RUN_ID}
           docker push ${{ secrets.DOCKER_HUB_USERNAME }}/bandung-house-price:latest

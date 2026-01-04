@@ -42,7 +42,8 @@ jobs:
       
       - name: Get latest run_id
         run: |
-          RUN_ID=$(ls -td mlruns/0/*/ | head -n 1 | cut -d'/' -f3)
+          cd MLProject
+          RUN_ID=$(ls -td mlruns/0/*/ | grep -v datasets | head -n 1 | awk -F'/' '{print $(NF-1)}')
           echo "RUN_ID=$RUN_ID" >> $GITHUB_ENV
           echo "Latest run_id: $RUN_ID"
 

@@ -42,20 +42,34 @@ jobs:
           from mlflow.tracking import MlflowClient
 
           client = MlflowClient()
-          experiment = client.get_experiment_by_name("Default")
+          exp = client.get_experiment_by_name("Default")
+
+          if exp is None:
+              raise RuntimeError("Default experiment not found")
 
           runs = client.search_runs(
-              experiment_ids=[experiment.experiment_id],
+              experiment_ids=[exp.experiment_id],
               order_by=["attributes.start_time DESC"],
               max_results=1,
           )
 
-          run_id = runs[0].info.run_id
-          print(f"RUN_ID={run_id}")
+          if not runs:
+              raise RuntimeError("No MLflow runs found")
 
-          with open("$GITHUB_ENV", "a") as f:
+          run_id = runs[0].info.run_id
+          print("Captured RUN_ID:", run_id)
+
+          with open("${GITHUB_ENV}", "a") as f:
               f.write(f"RUN_ID={run_id}\n")
           EOF
+
+      - name: Verify RUN_ID
+        run: |
+          echo "RUN_ID is: '$RUN_ID'"
+          if [ -z "$RUN_ID" ]; then
+            echo "RUN_ID is empty, failing pipeline"
+            exit 1
+          fi
 
       - name: Build Docker image from MLflow model
         run: |

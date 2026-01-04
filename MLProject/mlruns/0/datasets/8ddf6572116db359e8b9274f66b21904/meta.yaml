@@ -1,0 +1,10 @@
+digest: 52b7bbfc
+name: dataset
+profile: '{"num_rows": 1522, "num_elements": 7610}'
+schema: '{"mlflow_colspec": [{"type": "double", "name": "location", "required": true},
+  {"type": "double", "name": "bedroom_count", "required": true}, {"type": "double",
+  "name": "bathroom_count", "required": true}, {"type": "double", "name": "carport_count",
+  "required": true}, {"type": "double", "name": "land_area", "required": true}]}'
+source: '{"tags": {"mlflow.user": "runner", "mlflow.source.name": "modelling.py",
+  "mlflow.source.type": "LOCAL", "mlflow.source.git.commit": "95a1616f007f517a162b94cfb2792a3507dafd7b"}}'
+source_type: code

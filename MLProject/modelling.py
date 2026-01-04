@@ -38,6 +38,7 @@ if __name__ == "__main__":
         mlflow.sklearn.log_model(
             sk_model=model,
             artifact_path="model",
+            name='model',
             input_example=input_example
         )
 

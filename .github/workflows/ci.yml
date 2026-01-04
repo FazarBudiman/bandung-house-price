@@ -35,7 +35,14 @@ jobs:
           OUTPUT=$(mlflow run . --env-manager=local)
           echo "$OUTPUT"
 
-          RUN_ID=$(echo "$OUTPUT" | grep "Run ID" | awk '{print $NF}')
+      - name: Get latest run_id from MLflow
+        run: |
+          RUN_ID=$(mlflow runs list \
+            --experiment-id 0 \
+            --order-by start_time DESC \
+            --max-results 1 \
+            --output json | python -c "import sys, json; print(json.load(sys.stdin)[0]['run_id'])")
+
           echo "RUN_ID=$RUN_ID" >> $GITHUB_ENV
           echo "Captured RUN_ID: $RUN_ID"
 

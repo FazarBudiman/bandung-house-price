@@ -1,0 +1,6 @@
+name: bandung-house-price-xgboost
+
+entry_points:
+  main:
+    command: >
+      python modelling.py

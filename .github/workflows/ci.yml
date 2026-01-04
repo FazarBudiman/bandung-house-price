@@ -1,0 +1,56 @@
+name: MLflow CI
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  train-build-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r MLProject/requirements.txt
+          pip install mlflow xgboost scikit-learn
+
+      - name: Run MLflow Project
+        run: |
+          cd MLProject
+          mlflow run . --env-manager=local
+
+      - name: Get latest run_id
+        run: |
+          RUN_ID=$(ls -td MLProject/mlruns/*/*/ | head -n 1 | awk -F'/' '{print $(NF-1)}')
+          echo "RUN_ID=$RUN_ID" >> $GITHUB_ENV
+          echo "Latest run_id: $RUN_ID"
+
+      - name: Build Docker image from MLflow model
+        run: |
+          mlflow models build-docker \
+            --model-uri "runs:/$RUN_ID/model" \
+            --name bandung-house-price
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+
+      - name: Tag Docker image
+        run: |
+          docker tag bandung-house-price \
+          ${{ secrets.DOCKER_HUB_USERNAME }}/bandung-house-price:latest
+
+      - name: Push Docker image
+        run: |
+          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/bandung-house-price:latest

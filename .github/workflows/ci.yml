@@ -23,10 +23,14 @@ jobs:
           pip install -r MLProject/requirements.txt
           pip install mlflow xgboost scikit-learn
 
-      - name: Run MLflow Project
+      # - name: Run MLflow Project
+      #   run: |
+      #     cd MLProject
+      #     mlflow run . --env-manager=local
+
+      - name: Run training script
         run: |
-          cd MLProject
-          mlflow run . --env-manager=local
+          python MLProject/modelling.py
 
       - name: Get latest run_id
         run: |

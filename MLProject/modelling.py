@@ -19,7 +19,7 @@ if __name__ == "__main__":
 
     input_example = X_train[0:5]
 
-    mlflow.autolog(log_models=False, log_datasets=False)
+    mlflow.autolog()
 
     with mlflow.start_run():    
         model = XGBRegressor(
@@ -34,12 +34,6 @@ if __name__ == "__main__":
         )
 
         model.fit(X_train, y_train, eval_set=[(X_test, y_test)], verbose=False)
-
-        mlflow.sklearn.log_model(
-            sk_model=model,
-            artifact_path="model",
-            input_example=input_example
-        )
 
         y_pred = model.predict(X_test)
 

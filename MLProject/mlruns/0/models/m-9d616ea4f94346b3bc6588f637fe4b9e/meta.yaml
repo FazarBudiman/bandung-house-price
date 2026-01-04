@@ -1,0 +1,10 @@
+artifact_location: file:///home/runner/work/bandung-house-price/bandung-house-price/MLProject/mlruns/0/models/m-9d616ea4f94346b3bc6588f637fe4b9e/artifacts
+creation_timestamp: 1767528633498
+experiment_id: '0'
+last_updated_timestamp: 1767528635670
+model_id: m-9d616ea4f94346b3bc6588f637fe4b9e
+model_type: null
+name: model
+source_run_id: 7dd3c4c7dcff48109c701261635efc52
+status: 2
+status_message: null

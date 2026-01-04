@@ -38,7 +38,7 @@ jobs:
       - name: Get latest run_id using MLflow Python API
         run: |
           python - << 'EOF'
-          import mlflow
+          import os
           from mlflow.tracking import MlflowClient
 
           client = MlflowClient()
@@ -59,9 +59,10 @@ jobs:
           run_id = runs[0].info.run_id
           print("Captured RUN_ID:", run_id)
 
-          with open("${GITHUB_ENV}", "a") as f:
+          with open(os.environ["GITHUB_ENV"], "a") as f:
               f.write(f"RUN_ID={run_id}\n")
           EOF
+
 
       - name: Verify RUN_ID
         run: |

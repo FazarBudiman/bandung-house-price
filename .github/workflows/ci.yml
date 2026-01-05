@@ -7,14 +7,9 @@ on:
 permissions:
   contents: read
 
-# env:
-#   # Tracking MLflow konsisten di semua step
-#   MLFLOW_TRACKING_URI: file:${{ github.workspace }}/MLProject/mlruns
-
 env:
-  MLFLOW_TRACKING_URI: https://dagshub.com/${{ secrets.DAGSHUB_USERNAME }}/${{ secrets.DAGSHUB_REPO }}.mlflow
-  MLFLOW_TRACKING_USERNAME: ${{ secrets.DAGSHUB_USERNAME }}
-  MLFLOW_TRACKING_PASSWORD: ${{ secrets.DAGSHUB_TOKEN }}
+  # Tracking MLflow konsisten di semua step
+  MLFLOW_TRACKING_URI: file:${{ github.workspace }}/MLProject/mlruns
 
 
 jobs:
@@ -41,38 +36,35 @@ jobs:
           OUTPUT=$(mlflow run . --env-manager=local)
           echo "$OUTPUT"
 
-      - name: Get latest run_id from DAGsHub
-        run: |
-          python - << 'EOF'
-          import os
-          from mlflow.tracking import MlflowClient
+      - name: Get latest run_id using MLflow Python API 
+        run: | 
+          python - << 'EOF' 
+          import os 
+          from mlflow.tracking import MlflowClient 
+          
+          client = MlflowClient() 
+          exp = client.get_experiment_by_name("Default") 
+          
+          if exp is None: 
+            raise RuntimeError("Default experiment not found") 
+            
+          runs = client.search_runs( 
+            experiment_ids=[exp.experiment_id], 
+            order_by=["attributes.start_time DESC"], 
+            max_results=1, 
+          ) 
+          
+          if not runs: 
+            raise RuntimeError("No MLflow runs found") 
+          
+          run_id = runs[0].info.run_id 
+          print("Captured RUN_ID:", run_id) 
+          
+          with open(os.environ["GITHUB_ENV"], "a") as f: 
+            f.write(f"RUN_ID={run_id}\n") 
 
-          EXPERIMENT_NAME = "Submission SML"
-
-          client = MlflowClient()
-          exp = client.get_experiment_by_name(EXPERIMENT_NAME)
-
-          if exp is None:
-              raise RuntimeError(f"Experiment '{EXPERIMENT_NAME}' not found")
-
-          runs = client.search_runs(
-              experiment_ids=[exp.experiment_id],
-              order_by=["attributes.start_time DESC"],
-              max_results=1,
-          )
-
-          if not runs:
-              raise RuntimeError("No MLflow runs found")
-
-          run_id = runs[0].info.run_id
-          print("Captured RUN_ID:", run_id)
-
-          with open(os.environ["GITHUB_ENV"], "a") as f:
-              f.write(f"RUN_ID={run_id}\n")
           EOF
-
-
-
+          
       - name: Verify RUN_ID
         run: |
           echo "RUN_ID is: '$RUN_ID'"

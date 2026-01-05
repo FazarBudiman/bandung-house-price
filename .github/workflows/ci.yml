@@ -47,7 +47,7 @@ jobs:
           import os
           from mlflow.tracking import MlflowClient
 
-          EXPERIMENT_NAME = "bandung-house-price"
+          EXPERIMENT_NAME = "Submission SML"
 
           client = MlflowClient()
           exp = client.get_experiment_by_name(EXPERIMENT_NAME)

@@ -18,8 +18,7 @@ if __name__ == "__main__":
     y_test = pd.read_csv(DATA_DIR / "y_test_processed.csv").values.ravel()
 
     input_example = X_train[0:5]
-
-    mlflow.set_experiment("Submission SML")
+    
     with mlflow.start_run():    
         model = XGBRegressor(
         n_estimators=466,

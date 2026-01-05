@@ -19,6 +19,7 @@ if __name__ == "__main__":
 
     input_example = X_train[0:5]
 
+    mlflow.set_experiment("Submission SML")
     with mlflow.start_run():    
         model = XGBRegressor(
         n_estimators=466,

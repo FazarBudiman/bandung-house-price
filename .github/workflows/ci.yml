@@ -41,17 +41,19 @@ jobs:
           OUTPUT=$(mlflow run . --env-manager=local)
           echo "$OUTPUT"
 
-      - name: Get latest run_id using MLflow Python API
+      - name: Get latest run_id from DAGsHub
         run: |
           python - << 'EOF'
           import os
           from mlflow.tracking import MlflowClient
 
+          EXPERIMENT_NAME = "bandung-house-price"
+
           client = MlflowClient()
-          exp = client.get_experiment_by_name("Default")
+          exp = client.get_experiment_by_name(EXPERIMENT_NAME)
 
           if exp is None:
-              raise RuntimeError("Default experiment not found")
+              raise RuntimeError(f"Experiment '{EXPERIMENT_NAME}' not found")
 
           runs = client.search_runs(
               experiment_ids=[exp.experiment_id],
@@ -68,6 +70,7 @@ jobs:
           with open(os.environ["GITHUB_ENV"], "a") as f:
               f.write(f"RUN_ID={run_id}\n")
           EOF
+
 
 
       - name: Verify RUN_ID
